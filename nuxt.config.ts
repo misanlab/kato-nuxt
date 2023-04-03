@@ -3,7 +3,10 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@nuxtjs/color-mode"],
   runtimeConfig: {
     // These keys are only available server-side
-    testSecret: "testSecret",
+    MONGODB_URI: process.env.MONGODB_URI,
+    JWT_SECRET: process.env.JWT_SECRET,
+    MONGODB_DBNAME: process.env.MONGODB_DBNAME,
+
     public: {
       // These keys are available client-side
       testPublic: "testPublic",

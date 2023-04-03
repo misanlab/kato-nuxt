@@ -26,6 +26,8 @@ import { NCard, NInput, NButton } from "naive-ui";
 import { isEmail } from "validator";
 import axios from "axios";
 
+const runtimeConfig = useRuntimeConfig();
+
 const emailAddress = ref("njdtihbceivcynjxls@tpwlb.com");
 
 const submitEmailAddress = async () => {
