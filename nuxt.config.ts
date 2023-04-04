@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@nuxtjs/color-mode"],
+
   runtimeConfig: {
     // These keys are only available server-side
     MONGODB_URI: process.env.MONGODB_URI,
@@ -27,6 +28,10 @@ export default defineNuxtConfig({
         : ["@juggle/resize-observer"],
   },
 
+  tailwindcss: {
+    injectPosition: "first",
+  },
+
   vite: {
     optimizeDeps: {
       include:
@@ -43,5 +48,12 @@ export default defineNuxtConfig({
         dir: "./assets/emails",
       },
     ],
+  },
+
+  app: {
+    head: {
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+    },
   },
 });
