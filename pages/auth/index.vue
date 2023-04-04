@@ -52,6 +52,7 @@
           type="primary"
           size="large"
           :disabled="invalidAuthCode"
+          @click=""
         >
           Sign In
         </n-button>
@@ -66,6 +67,7 @@ import axios from "axios";
 import { Icon } from "@iconify/vue";
 
 const route = useRoute();
+const router = useRouter();
 
 const emailAddress = decodeURIComponent(route.query.emailAddress as string);
 const authCode = ref("");
@@ -78,5 +80,27 @@ const invalidAuthCode = computed(() => {
   return authCode.value === "" || authCode.value.length !== 5;
 });
 
-console.log(emailAddress);
+const submitEmailAddress = async () => {
+  if (invalidAuthCode.value) return;
+
+  // router.push({
+  //   path: "/auth",
+  //   query: { emailAddress: encodeURIComponent(emailAddress.value) },
+  // });
+
+  const response = await axios.post("/api/login/auth", {
+    emailAddress: emailAddress,
+    authCode: authCode.value,
+  });
+
+  if (response.status === 200) {
+    router.push({
+      path: "/",
+    });
+  } else {
+    console.log("Something went wrong!");
+  }
+
+  // console.log(response);
+};
 </script>
