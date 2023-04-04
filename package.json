@@ -6,7 +6,10 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "prepare": "run-script-os",
+    "prepare:win32": "husky install",
+    "prepare:darwin:linux": "husky install && chmod ug+x .husky/*  && chmod ug+x .git/hooks/*"
   },
   "devDependencies": {
     "@css-render/vue3-ssr": "^0.15.12",
@@ -17,6 +20,7 @@
     "@types/mongo-sanitize": "^1.0.1",
     "@types/node": "^18.15.11",
     "@types/validator": "^13.7.14",
+    "husky": "^8.0.0",
     "naive-ui": "^2.34.3",
     "nuxt": "^3.3.2"
   },
@@ -29,6 +33,7 @@
     "mongo-sanitize": "^1.1.0",
     "mongodb": "^5.1.0",
     "nanoid": "^4.0.2",
+    "run-script-os": "^1.1.6",
     "validator": "^13.9.0",
     "vue3-lottie": "^2.5.0"
   }
