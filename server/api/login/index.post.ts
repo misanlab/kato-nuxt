@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { MongoClient } from "mongodb";
-import { nanoid, customAlphabet } from "nanoid";
+import { customAlphabet } from "nanoid";
 import path from "path";
 import sgMail from "@sendgrid/mail";
 import { readFileSync } from "fs";
@@ -116,6 +116,13 @@ export default eventHandler(async (event) => {
         base_url: BASE_URL,
         signin_url: authUrl,
         email: emailAddress,
+      }),
+    };
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "Auth code sent",
       }),
     };
 
