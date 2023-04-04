@@ -1,22 +1,20 @@
 <template>
-  <div class="flex flex-col w-full max-w-screen-sm items-center">
+  <div class="flex w-full max-w-screen-sm flex-col items-center">
     <ClientOnly>
       <LottiePlayer
-        animationLink="https://assets6.lottiefiles.com/packages/lf20_87uabjh2.json"
+        animation-link="https://assets6.lottiefiles.com/packages/lf20_87uabjh2.json"
         :height="150"
         :width="150"
       />
     </ClientOnly>
 
-    <h1 class="mt-4 text-2xl sm:text-4xl text-center font-bold">
-      Let's get you logged in!
-    </h1>
+    <h1 class="mt-4 text-center text-2xl font-bold sm:text-4xl">Let's get you logged in!</h1>
 
     <div
-      class="mt-4 rounded-lg shadow-md bg-white px-4 py-6 sm:px-8 sm:py-8 space-y-6 max-w-sm border border-slate-200 w-full"
+      class="mt-4 w-full max-w-sm space-y-6 rounded-lg border border-slate-200 bg-white px-4 py-6 shadow-md sm:px-8 sm:py-8"
     >
       <div class="flex flex-col">
-        <span class="text-sm text-slate-500 mb-3 text-center">
+        <span class="mb-3 text-center text-sm text-slate-500">
           Enter your email below and we'll send you link to log in.
         </span>
 
@@ -34,10 +32,10 @@
           strong
           secondary
           type="primary"
-          @click="submitEmailAddress"
           size="large"
           :loading="loading"
           :disabled="invalidEmailAddress"
+          @click="submitEmailAddress"
         >
           Sign In
         </n-button>
@@ -47,11 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import { NInput, NButton } from "naive-ui";
-import isEmail from "validator/es/lib/isEmail";
 import axios from "axios";
+import { NButton, NInput } from "naive-ui";
+import isEmail from "validator/es/lib/isEmail";
 
-const runtimeConfig = useRuntimeConfig();
 const router = useRouter();
 
 const loading = ref(false);

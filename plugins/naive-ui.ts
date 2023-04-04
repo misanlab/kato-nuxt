@@ -1,4 +1,5 @@
 import { setup } from "@css-render/vue3-ssr";
+
 import { defineNuxtPlugin } from "#app";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -21,13 +22,13 @@ export default defineNuxtPlugin((nuxtApp) => {
         return originalMeta.then((resolvedOriginalMeta) => {
           return {
             ...resolvedOriginalMeta,
-            headTags: resolvedOriginalMeta["headTags"] + collect(),
+            headTags: resolvedOriginalMeta.headTags + collect(),
           };
         });
       } else {
         return {
           ...originalMeta,
-          headTags: originalMeta["headTags"] + collect(),
+          headTags: originalMeta.headTags + collect(),
         };
       }
     };

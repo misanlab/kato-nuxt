@@ -11,33 +11,33 @@ import "vue3-lottie/dist/style.css";
 
 useHead({
   title: "Kato",
-  meta: [{ name: "description", content: "My amazing site." }],
-  link: [
-    {
-      rel: "apple-touch-icon",
-      sizes: "180x180",
-      href: "/apple-touch-icon.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      sizes: "16x16",
-      href: "/favicon-16x16.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      sizes: "32x32",
-      href: "/favicon-32x32.png",
-    },
-    {
-      rel: "manifest",
-      href: "/site.webmanifest",
-    },
-  ],
   bodyAttrs: {
     class: "test",
   },
+  link: [
+    {
+      href: "/apple-touch-icon.png",
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+    },
+    {
+      href: "/favicon-16x16.png",
+      rel: "icon",
+      sizes: "16x16",
+      type: "image/png",
+    },
+    {
+      href: "/favicon-32x32.png",
+      rel: "icon",
+      sizes: "32x32",
+      type: "image/png",
+    },
+    {
+      href: "/site.webmanifest",
+      rel: "manifest",
+    },
+  ],
+  meta: [{ name: "description", content: "My amazing site." }],
 });
 </script>
 

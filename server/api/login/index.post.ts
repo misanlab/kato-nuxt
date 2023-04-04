@@ -1,15 +1,15 @@
-import jwt from "jsonwebtoken";
-import { MongoClient } from "mongodb";
-import { customAlphabet } from "nanoid";
+/* eslint-disable unused-imports/no-unused-vars */
+import { readFileSync } from "fs";
 import path from "path";
 import sgMail from "@sendgrid/mail";
-import { readFileSync } from "fs";
-import Handlebars from "handlebars";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
+import * as dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
-import isEmail from "validator/es/lib/isEmail";
+import utc from "dayjs/plugin/utc";
+import Handlebars from "handlebars";
 import sanitize from "mongo-sanitize";
+import { MongoClient } from "mongodb";
+import { customAlphabet } from "nanoid";
+import isEmail from "validator/es/lib/isEmail";
 
 //  extend dayjs with utc plugin
 dayjs.extend(utc);
@@ -19,7 +19,6 @@ dayjs.extend(timezone);
 
 const runtimeConfig = useRuntimeConfig();
 
-const JWT_SECRET = runtimeConfig.JWT_SECRET;
 const MONGODB_URI = runtimeConfig.MONGODB_URI;
 const MONGODB_DBNAME = runtimeConfig.MONGODB_DBNAME;
 const SENDGRID_API_KEY = runtimeConfig.SENDGRID_API_KEY;
@@ -29,6 +28,11 @@ const BASE_URL = runtimeConfig.public.BASE_URL;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 const emailsDir = path.resolve(process.cwd(), "assets", "emails");
+
+interface ResponseType {
+  body?: string;
+  statusCode?: number;
+}
 
 export default eventHandler(async (event) => {
   const client = new MongoClient(MONGODB_URI);
@@ -91,17 +95,17 @@ export default eventHandler(async (event) => {
       // Update the user with the new magic code
       const update = {
         $set: {
-          magicCode,
           createdAt: dayjs().utc().unix(),
+          magicCode,
         },
       };
 
       // await authCollection.updateOne(query, update);
     } else {
       const authObject = {
+        createdAt: dayjs().utc().unix(),
         emailAddress,
         magicCode,
-        createdAt: dayjs().utc().unix(),
       };
 
       // await authCollection.insertOne(authObject);
@@ -119,59 +123,54 @@ export default eventHandler(async (event) => {
     const authUrl = `${BASE_URL}/auth?code=${encodeURIComponent(combinedCode)}`;
 
     const msg = {
-      to: "test@sjy.so",
       // to: emailAddress,
       from: {
-        email: "no-reply@sjy.so",
         name: "Kato Authentication Service",
+        email: "no-reply@sjy.so",
       },
-      subject: "🌞 Your sign-in details for Kato",
       html: emailTemplate({
         auth_code: magicCode,
         base_url: BASE_URL,
-        signin_url: authUrl,
         email: emailAddress,
+        signin_url: authUrl,
       }),
+      subject: "🌞 Your sign-in details for Kato",
+      to: "test@sjy.so",
     };
 
     console.log(magicCode, ":", emailAddress);
     console.log(authUrl);
 
     return {
-      statusCode: 200,
       body: JSON.stringify({
         message: "Auth code sent",
       }),
+      statusCode: 200,
     };
 
-    sgMail
-      .send(msg)
-      .then(() => {
-        console.log("Email sent");
+    // sgMail
+    //   .send(msg)
+    //   .then(() => {
+    //     console.log("Email sent");
 
-        response.statusCode = 200;
-        response.body = JSON.stringify({
-          message: "Auth code sent",
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+    //     response.statusCode = 200;
+    //     response.body = JSON.stringify({
+    //       message: "Auth code sent",
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
 
-        response.statusCode = 500;
-        response.body = JSON.stringify({
-          message: "Error sending email",
-        });
-      });
+    //     response.statusCode = 500;
+    //     response.body = JSON.stringify({
+    //       message: "Error sending email",
+    //     });
+    //   });
+
+    // return response;
   } catch (error) {
     console.log(error);
   } finally {
     await client.close();
-
-    return response;
   }
 });
-
-interface ResponseType {
-  statusCode?: number;
-  body?: string;
-}

@@ -1,4 +1,4 @@
-export default defineEventHandler((event) => {
+export default defineEventHandler((_event) => {
   const runtimeConfig = useRuntimeConfig();
 
   console.log(runtimeConfig.MONGODB_URI);

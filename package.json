@@ -1,30 +1,68 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "lint-staged": {
+    "./**/*.{ts,js,jsx,tsx}": [
+      "yarn lint --fix",
+      "yarn format"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "commit": "cz",
+    "lint": "eslint --ignore-path .gitignore \"./**/*.+(ts|js|cjs|tsx|vue)\"",
+    "format": "prettier --ignore-path .gitignore \"./**/*.+(ts|js|cjs|tsx|vue)\" --write",
     "prepare": "run-script-os",
     "prepare:win32": "husky install",
     "prepare:darwin:linux": "husky install && chmod ug+x .husky/*  && chmod ug+x .git/hooks/*"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.5.1",
+    "@commitlint/config-conventional": "^17.4.4",
     "@css-render/vue3-ssr": "^0.15.12",
+    "@fairdataihub/config": "^2.2.3",
     "@iconify/vue": "^4.1.1",
+    "@nuxt/eslint-config": "^0.1.1",
     "@nuxtjs/color-mode": "^3.2.0",
+    "@nuxtjs/device": "^3.1.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/tailwindcss": "^6.6.5",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mongo-sanitize": "^1.0.1",
     "@types/node": "^18.15.11",
     "@types/validator": "^13.7.14",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-nuxt": "^4.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sort-keys-custom-order": "^1.0.5",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "eslint-plugin-vue": "^9.10.0",
     "husky": "^8.0.0",
+    "lint-staged": "^13.2.0",
+    "megasanjay-devmoji": "^1.2.1",
     "naive-ui": "^2.34.3",
-    "nuxt": "^3.3.2"
+    "nuxt": "^3.3.2",
+    "prettier": "^2.8.7",
+    "prettier-plugin-tailwindcss": "^0.2.6",
+    "typescript": "^5.0.3"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.4.7",
     "@sendgrid/mail": "^7.7.0",
     "axios": "^1.3.4",
     "dayjs": "^1.11.7",

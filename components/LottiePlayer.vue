@@ -1,26 +1,23 @@
 <template>
   <client-only>
-    <Vue3Lottie
-      :animationLink="animationLink"
-      :height="height"
-      :width="width"
-    />
+    <Vue3Lottie :animation-link="animationLink" :height="height" :width="width" />
   </client-only>
 </template>
 
 <script setup>
+// eslint-disable-next-line unused-imports/no-unused-vars
 const props = defineProps({
   animationLink: {
-    type: String,
     required: true,
+    type: String,
   },
   height: {
-    type: Number,
     required: true,
+    type: Number,
   },
   width: {
-    type: Number,
     required: true,
+    type: Number,
   },
 });
 </script>
