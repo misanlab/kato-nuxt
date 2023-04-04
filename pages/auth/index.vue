@@ -46,13 +46,15 @@
             you don't see it in your inbox.
           </span>
         </n-popover>
+
         <n-button
           strong
           secondary
           type="primary"
           size="large"
           :disabled="invalidAuthCode"
-          @click=""
+          :loading="loading"
+          @click="submitAuthCode"
         >
           Sign In
         </n-button>
@@ -64,13 +66,29 @@
 <script setup lang="ts">
 import { NInput, NButton, NPopover } from "naive-ui";
 import axios from "axios";
-import { Icon } from "@iconify/vue";
 
 const route = useRoute();
 const router = useRouter();
 
-const emailAddress = decodeURIComponent(route.query.emailAddress as string);
+const loading = ref(false);
+
 const authCode = ref("");
+
+const emailAddress = ref("");
+const rawAuthURL = ref("");
+
+emailAddress.value = decodeURIComponent(route.query.emailAddress as string);
+rawAuthURL.value = decodeURIComponent(route.query.code as string);
+
+if (
+  rawAuthURL.value !== "undefined" &&
+  rawAuthURL.value !== "" &&
+  rawAuthURL.value.search(":")
+) {
+  // split the url to get the auth code
+  emailAddress.value = rawAuthURL.value.split(":")[0];
+  authCode.value = rawAuthURL.value.split(":")[1];
+}
 
 const onlyAllowNumber = (value: string) => {
   return /^\d*$/.test(value);
@@ -80,13 +98,10 @@ const invalidAuthCode = computed(() => {
   return authCode.value === "" || authCode.value.length !== 5;
 });
 
-const submitEmailAddress = async () => {
-  if (invalidAuthCode.value) return;
+const submitAuthCode = async () => {
+  loading.value = true;
 
-  // router.push({
-  //   path: "/auth",
-  //   query: { emailAddress: encodeURIComponent(emailAddress.value) },
-  // });
+  if (invalidAuthCode.value) return;
 
   const response = await axios.post("/api/login/auth", {
     emailAddress: emailAddress,
@@ -94,6 +109,8 @@ const submitEmailAddress = async () => {
   });
 
   if (response.status === 200) {
+    // store tokens
+
     router.push({
       path: "/",
     });

@@ -79,16 +79,33 @@ export default eventHandler(async (event) => {
 
     const magicCode = nanoidMagicCode();
 
-    const authObject = {
-      emailAddress,
-      magicCode,
-      createdAt: dayjs().utc().unix(),
-    };
-
     // Insert the new user into the auth database and wait for email verification
     const authCollection = database.collection("auth");
 
-    // await authCollection.insertOne(authObject);
+    // Check if the user already exists
+    const query = { emailAddress };
+
+    const user = await authCollection.findOne(query);
+
+    if (user) {
+      // Update the user with the new magic code
+      const update = {
+        $set: {
+          magicCode,
+          createdAt: dayjs().utc().unix(),
+        },
+      };
+
+      // await authCollection.updateOne(query, update);
+    } else {
+      const authObject = {
+        emailAddress,
+        magicCode,
+        createdAt: dayjs().utc().unix(),
+      };
+
+      // await authCollection.insertOne(authObject);
+    }
 
     // Send the login code to the user
     const emailFile = readFileSync(path.join(emailsDir, "confirm-email.html"), {
@@ -99,9 +116,7 @@ export default eventHandler(async (event) => {
 
     const combinedCode = `${emailAddress}:${magicCode}`;
 
-    const authUrl = `${BASE_URL}/login/auth?code=${encodeURIComponent(
-      combinedCode
-    )}`;
+    const authUrl = `${BASE_URL}/auth?code=${encodeURIComponent(combinedCode)}`;
 
     const msg = {
       to: "test@sjy.so",
@@ -118,6 +133,9 @@ export default eventHandler(async (event) => {
         email: emailAddress,
       }),
     };
+
+    console.log(magicCode, ":", emailAddress);
+    console.log(authUrl);
 
     return {
       statusCode: 200,

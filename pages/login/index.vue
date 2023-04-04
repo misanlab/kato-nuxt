@@ -36,6 +36,7 @@
           type="primary"
           @click="submitEmailAddress"
           size="large"
+          :loading="loading"
           :disabled="invalidEmailAddress"
         >
           Sign In
@@ -53,6 +54,8 @@ import axios from "axios";
 const runtimeConfig = useRuntimeConfig();
 const router = useRouter();
 
+const loading = ref(false);
+
 const emailAddress = ref("njdtihbceivcynjxls@tpwlb.com");
 
 const invalidEmailAddress = computed(() => {
@@ -60,28 +63,30 @@ const invalidEmailAddress = computed(() => {
 });
 
 const submitEmailAddress = async () => {
+  loading.value = true;
+
   if (invalidEmailAddress.value) return;
 
-  router.push({
-    path: "/auth",
-    query: { emailAddress: encodeURIComponent(emailAddress.value) },
-  });
-
-  // const response = await axios.post("/api/login", {
-  //   emailAddress: emailAddress.value,
+  // router.push({
+  //   path: "/auth",
+  //   query: { emailAddress: encodeURIComponent(emailAddress.value) },
   // });
 
-  // if (response.status === 200) {
-  //   console.log("Email sent!");
+  const response = await axios.post("/api/login", {
+    emailAddress: emailAddress.value,
+  });
 
-  //   router.push({
-  //     path: "/auth",
-  //     query: { emailAddress: encodeURIComponent(emailAddress.value) },
-  //   });
-  // } else {
-  //   console.log("Something went wrong!");
-  // }
+  loading.value = false;
 
-  // console.log(response);
+  if (response.status === 200) {
+    console.log("Email sent!");
+
+    router.push({
+      path: "/auth",
+      query: { emailAddress: encodeURIComponent(emailAddress.value) },
+    });
+  } else {
+    console.log("Something went wrong!");
+  }
 };
 </script>
