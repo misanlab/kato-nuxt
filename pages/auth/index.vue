@@ -37,7 +37,7 @@
       <div class="flex items-center justify-between space-x-4">
         <n-popover trigger="hover" :width="200" placement="bottom-start">
           <template #trigger>
-            <span> Need help? </span>
+            <span class="cursor-help"> Need help? </span>
           </template>
           <span>
             It may take a minute to receive your code. Check your spam folder if you don't see it in

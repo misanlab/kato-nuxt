@@ -20,8 +20,8 @@
       <NuxtLink to="/login">
         <Icon
           icon="ri:user-received-fill"
-          height="30"
-          width="30"
+          height="29"
+          width="29"
           class="text-slate-800 transition-colors hover:text-slate-500"
         />
       </NuxtLink>

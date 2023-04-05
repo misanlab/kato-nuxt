@@ -26,12 +26,11 @@ module.exports = {
       },
     ],
 
-    // For JS objects sorting
     "sort-keys-custom-order/object-keys": [
       "error",
       { orderedKeys: ["id", "username", "name", "title", "50"] },
     ],
-    // For TS types sorting
+
     "sort-keys-custom-order/type-keys": [
       "error",
       { orderedKeys: ["id", "username", "name", "title", "50"] },

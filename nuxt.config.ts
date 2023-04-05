@@ -1,3 +1,5 @@
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
@@ -39,7 +41,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    JWT_SECRET: process.env.JWT_SECRET,
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     MONGODB_DBNAME: process.env.MONGODB_DBNAME,
     // These keys are only available server-side
     MONGODB_URI: process.env.MONGODB_URI,
@@ -49,6 +51,7 @@ export default defineNuxtConfig({
       // These keys are available client-side
       BASE_URL: "http://localhost:3000",
     },
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   },
 
@@ -63,5 +66,11 @@ export default defineNuxtConfig({
           ? ["naive-ui", "vueuc", "date-fns-tz/esm/formatInTimeZone"]
           : [],
     },
+    plugins: [
+      nodePolyfills({
+        // Whether to polyfill `node:` protocol imports.
+        protocolImports: true,
+      }),
+    ],
   },
 });

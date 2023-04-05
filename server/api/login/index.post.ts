@@ -1,14 +1,15 @@
-/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable import/no-named-as-default-member */
+
 import { readFileSync } from "fs";
 import path from "path";
 import sgMail from "@sendgrid/mail";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import Handlebars from "handlebars";
 import sanitize from "mongo-sanitize";
 import { MongoClient } from "mongodb";
-import { customAlphabet } from "nanoid";
+
 import isEmail from "validator/es/lib/isEmail";
 
 //  extend dayjs with utc plugin
@@ -29,36 +30,25 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 
 const emailsDir = path.resolve(process.cwd(), "assets", "emails");
 
-interface ResponseType {
-  body?: string;
-  statusCode?: number;
-}
-
 export default eventHandler(async (event) => {
   const client = new MongoClient(MONGODB_URI);
-
-  const response: ResponseType = {};
 
   const body = await readBody(event);
 
   // Check if the body is present
   if (!body) {
-    response.statusCode = 400;
-    response.body = JSON.stringify({
+    throw createError({
       message: "Missing required fields",
+      statusCode: 400,
     });
-
-    return response;
   }
 
   // Check if the email address is present
   if (!body.emailAddress) {
-    response.statusCode = 400;
-    response.body = JSON.stringify({
+    throw createError({
       message: "Email address is required",
+      statusCode: 400,
     });
-
-    return response;
   }
 
   // Sanitize the email address
@@ -66,22 +56,17 @@ export default eventHandler(async (event) => {
 
   // Check if the email address is valid
   if (!isEmail(emailAddress)) {
-    response.statusCode = 400;
-    response.body = JSON.stringify({
+    throw createError({
       message: "Invalid email address",
+      statusCode: 400,
     });
-
-    return response;
   }
 
   // Check if the user exists in the database
   try {
     const database = client.db(MONGODB_DBNAME);
 
-    const alphabet = "0123456789";
-    const nanoidMagicCode = customAlphabet(alphabet, 5);
-
-    const magicCode = nanoidMagicCode();
+    const magicCode = Math.floor(10000 + Math.random() * 90000);
 
     // Insert the new user into the auth database and wait for email verification
     const authCollection = database.collection("auth");
@@ -100,7 +85,7 @@ export default eventHandler(async (event) => {
         },
       };
 
-      // await authCollection.updateOne(query, update);
+      await authCollection.updateOne(query, update);
     } else {
       const authObject = {
         createdAt: dayjs().utc().unix(),
@@ -108,7 +93,7 @@ export default eventHandler(async (event) => {
         magicCode,
       };
 
-      // await authCollection.insertOne(authObject);
+      await authCollection.insertOne(authObject);
     }
 
     // Send the login code to the user
@@ -123,7 +108,6 @@ export default eventHandler(async (event) => {
     const authUrl = `${BASE_URL}/auth?code=${encodeURIComponent(combinedCode)}`;
 
     const msg = {
-      // to: emailAddress,
       from: {
         name: "Kato Authentication Service",
         email: "no-reply@sjy.so",
@@ -135,39 +119,36 @@ export default eventHandler(async (event) => {
         signin_url: authUrl,
       }),
       subject: "🌞 Your sign-in details for Kato",
-      to: "test@sjy.so",
+      to: emailAddress,
     };
 
     console.log(magicCode, ":", emailAddress);
     console.log(authUrl);
 
-    return {
-      body: JSON.stringify({
+    const statusCode = await sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+
+        return 200;
+      })
+      .catch((error) => {
+        console.error(error);
+
+        return 500;
+      });
+
+    if (statusCode === 200) {
+      return {
         message: "Auth code sent",
-      }),
-      statusCode: 200,
-    };
-
-    // sgMail
-    //   .send(msg)
-    //   .then(() => {
-    //     console.log("Email sent");
-
-    //     response.statusCode = 200;
-    //     response.body = JSON.stringify({
-    //       message: "Auth code sent",
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-
-    //     response.statusCode = 500;
-    //     response.body = JSON.stringify({
-    //       message: "Error sending email",
-    //     });
-    //   });
-
-    // return response;
+        statusCode: 200,
+      };
+    } else {
+      throw createError({
+        message: "Error sending email",
+        statusCode: 500,
+      });
+    }
   } catch (error) {
     console.log(error);
   } finally {
