@@ -15,7 +15,7 @@
     >
       <div class="flex flex-col">
         <span class="mb-3 text-center text-sm text-slate-500">
-          Enter your email below and we'll send you link to log in.
+          Enter your email below to get started.
         </span>
 
         <n-input
