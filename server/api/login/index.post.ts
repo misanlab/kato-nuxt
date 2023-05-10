@@ -66,6 +66,7 @@ export default eventHandler(async (event) => {
   try {
     const database = client.db(MONGODB_DBNAME);
 
+    // Generate a magic code
     const magicCode = Math.floor(10000 + Math.random() * 90000);
 
     // Insert the new user into the auth database and wait for email verification
@@ -75,6 +76,8 @@ export default eventHandler(async (event) => {
     const query = { emailAddress };
 
     const user = await authCollection.findOne(query);
+
+    console.log(dayjs().utc().unix());
 
     if (user) {
       // Update the user with the new magic code

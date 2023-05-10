@@ -64,11 +64,6 @@ const submitEmailAddress = async () => {
 
   if (invalidEmailAddress.value) return;
 
-  // router.push({
-  //   path: "/auth",
-  //   query: { emailAddress: encodeURIComponent(emailAddress.value) },
-  // });
-
   const response = await axios.post("/api/login", {
     emailAddress: emailAddress.value,
   });

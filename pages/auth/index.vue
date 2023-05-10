@@ -99,7 +99,7 @@ const submitAuthCode = async () => {
 
   const response = await axios.post("/api/login/auth", {
     authCode: authCode.value,
-    emailAddress,
+    emailAddress: emailAddress.value,
   });
 
   if (response.status === 200) {
@@ -114,4 +114,9 @@ const submitAuthCode = async () => {
 
   // console.log(response);
 };
+
+onMounted(() => {
+  console.log("mounted");
+  // submitAuthCode();
+});
 </script>
