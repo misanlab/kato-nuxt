@@ -95,7 +95,10 @@ const invalidAuthCode = computed(() => {
 const submitAuthCode = async () => {
   loading.value = true;
 
-  if (invalidAuthCode.value) return;
+  if (invalidAuthCode.value) {
+    loading.value = false;
+    return;
+  }
 
   const response = await axios.post("/api/login/auth", {
     authCode: authCode.value,
